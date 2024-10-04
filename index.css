@@ -24,7 +24,7 @@ h2 {
     gap: 30px;
 }
 
-#map-container, #time-series-container {
+#map-container, #time-series-container, #heatmap-container {
     width: 100%;
     max-width: 800px;
     margin-bottom: 30px;
@@ -35,10 +35,16 @@ h2 {
     box-sizing: border-box;
 }
 
-#ph-deviation-chart, #time-series-chart {
+#ph-deviation-chart, #time-series-chart, #global-heatmap, #independent-heatmap {
     width: 100%;
     height: 400px;
     margin-top: 20px;
+}
+
+#heatmap-container p {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
 }
 
 ul {

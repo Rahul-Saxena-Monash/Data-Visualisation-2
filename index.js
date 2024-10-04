@@ -18,6 +18,121 @@ async function loadGraticuleData() {
     return await response.json();
 }
 
+function createHeatmapCharts(data) {
+    const variables = ['pH_T', 'SST', 'SSS', 'OMEGA_A', 'OMEGA_C', 'pH_deviation'];
+    const variableLabels = {
+        'pH_T': 'pH',
+        'SST': 'Sea Surface Temperature',
+        'SSS': 'Sea Surface Salinity',
+        'OMEGA_A': 'Omega Aragonite',
+        'OMEGA_C': 'Omega Calcite',
+        'pH_deviation': 'pH Deviation'
+    };
+
+    // Current approach: global normalization
+    let globalNormalizedData = [];
+    variables.forEach(variable => {
+        let values = data.map(d => d[variable]);
+        let mean = values.reduce((a, b) => a + b, 0) / values.length;
+        data.forEach(d => {
+            globalNormalizedData.push({
+                date: d.date,
+                key: variable,
+                value: d[variable],
+                deviation: d[variable] - mean
+            });
+        });
+    });
+
+    // Independent normalization
+    let independentNormalizedData = [];
+    variables.forEach(variable => {
+        let values = data.map(d => d[variable]);
+        let mean = values.reduce((a, b) => a + b, 0) / values.length;
+        let stdDev = Math.sqrt(values.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / values.length);
+        data.forEach(d => {
+            independentNormalizedData.push({
+                date: d.date,
+                key: variable,
+                value: d[variable],
+                deviation: (d[variable] - mean) / stdDev
+            });
+        });
+    });
+
+    const baseChart = {
+        $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+        width: 'container',
+        height: 300,
+        mark: 'rect',
+        encoding: {
+            x: {
+                field: 'date',
+                type: 'temporal',
+                timeUnit: 'yearmonth',
+                title: 'Year',
+                axis: { format: '%Y', labelAngle: 0 }
+            },
+            y: {
+                field: 'key',
+                type: 'nominal',
+                title: 'Variable',
+                sort: variables,
+                axis: {
+                    labelExpr: "datum.label == 'pH_T' ? 'pH' : datum.label == 'SST' ? 'Sea Surface Temperature' : datum.label == 'SSS' ? 'Sea Surface Salinity' : datum.label == 'OMEGA_A' ? 'Omega Aragonite' : datum.label == 'OMEGA_C' ? 'Omega Calcite' : datum.label == 'pH_deviation' ? 'pH Deviation' : ''"
+                }
+            },
+            tooltip: [
+                { field: 'date', type: 'temporal', title: 'Date', format: '%b %d, %Y' },
+                { field: 'key', type: 'nominal', title: 'Variable' },
+                { field: 'value', type: 'quantitative', title: 'Value', format: ',.4f' },
+                { field: 'deviation', type: 'quantitative', title: 'Deviation', format: ',.4f' }
+            ]
+        }
+    };
+
+    const globalNormalizedChart = {
+        ...baseChart,
+        title: 'Ocean Acidification Heatmap (Global Normalization)',
+        data: { values: globalNormalizedData },
+        encoding: {
+            ...baseChart.encoding,
+            color: {
+                field: 'deviation',
+                type: 'quantitative',
+                title: 'Deviation from Mean',
+                scale: {
+                    scheme: 'blueorange',
+                    domainMid: 0,
+                    domain: [-2.2, 0, 2.4],
+                    clamp: true
+                }
+            }
+        }
+    };
+
+    const independentNormalizedChart = {
+        ...baseChart,
+        title: 'Ocean Acidification Heatmap (Independent Normalization)',
+        data: { values: independentNormalizedData },
+        encoding: {
+            ...baseChart.encoding,
+            color: {
+                field: 'deviation',
+                type: 'quantitative',
+                title: 'Std Dev from Mean',
+                scale: {
+                    scheme: 'blueorange',
+                    domainMid: 0,
+                    domain: [-3, 0, 3],
+                    clamp: true
+                }
+            }
+        }
+    };
+
+    return [globalNormalizedChart, independentNormalizedChart];
+}
 
 async function createCharts() {
     try {
@@ -139,7 +254,7 @@ async function createCharts() {
                             {
                                 field: 'selectedVariable',
                                 type: 'quantitative',
-                                title: 'Selected Variable',
+                                title: 'Value',
                                 format: ',.4f'
                             }
                         ]
@@ -212,8 +327,12 @@ async function createCharts() {
             ]
         };
 
+        const [globalHeatmap, independentHeatmap] = createHeatmapCharts(acidificationData);
+
         await vegaEmbed('#ph-deviation-chart', phDeviationChart, { actions: false });
         await vegaEmbed('#time-series-chart', timeSeriesChart, { actions: false });
+        await vegaEmbed('#global-heatmap', globalHeatmap, { actions: false });
+        await vegaEmbed('#independent-heatmap', independentHeatmap, { actions: false });
 
         hideLoader();
     } catch (error) {
