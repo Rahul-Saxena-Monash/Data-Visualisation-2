@@ -102,10 +102,8 @@ function createHeatmapCharts(data) {
                 type: 'quantitative',
                 title: 'Deviation from Mean',
                 scale: {
-                    scheme: 'blueorange',
-                    domainMid: 0,
-                    domain: [-2.2, 0, 2.4],
-                    clamp: true
+                    domain: [-0.5, -0.1, 0, 0.1, 0.5],
+                    range: ['#d73027', '#fc8d59', '#e0e0e0', '#91bfdb', '#4575b4']
                 }
             }
         }
@@ -122,10 +120,8 @@ function createHeatmapCharts(data) {
                 type: 'quantitative',
                 title: 'Std Dev from Mean',
                 scale: {
-                    scheme: 'blueorange',
-                    domainMid: 0,
-                    domain: [-3, 0, 3],
-                    clamp: true
+                    domain: [-3, -1.5, 0, 1.5, 3],
+                    range: ['#d73027', '#fc8d59', '#e0e0e0', '#91bfdb', '#4575b4']
                 }
             }
         }
@@ -203,10 +199,59 @@ async function createCharts() {
             ]
         }
 
+        const phDeviationBarChart = {
+            ...baseChart,
+            title: 'pH Deviation Over Time',
+            data: { values: acidificationData },
+            transform: [
+                {
+                    calculate: "floor(year(datum.date) / 10) * 10 + 's'",
+                    as: 'decade'
+                },
+                {
+                    aggregate: [{
+                        op: 'mean',
+                        field: 'pH_deviation',
+                        as: 'average_pH_deviation'
+                    }],
+                    groupby: ['decade']
+                },
+                {
+                    sort: [{ field: 'decade' }]
+                }
+            ],
+            mark: 'bar',
+            encoding: {
+                y: {
+                    field: 'decade',
+                    type: 'ordinal',
+                    title: 'Decade',
+                    sort: 'ascending'
+                },
+                x: {
+                    field: 'average_pH_deviation',
+                    type: 'quantitative',
+                    title: 'Average pH Deviation'
+                },
+                color: {
+                    field: 'average_pH_deviation',
+                    type: 'quantitative',
+                    scale: {
+                        domain: [-0.1, -0.05, 0, 0.05, 0.1],
+                        range: ['#d73027', '#fc8d59', '#e0e0e0', '#91bfdb', '#4575b4']
+                    },
+                    legend: null
+                },
+                tooltip: [
+                    { field: 'decade', type: 'ordinal', title: 'Decade' },
+                    { field: 'average_pH_deviation', type: 'quantitative', title: 'Average pH Deviation', format: '.4f' }
+                ]
+            }
+        };
+
         const timeSeriesChart = {
             ...baseChart,
             data: { values: acidificationData },
-            mark: 'line',
             params: [
                 {
                     name: 'variable',
@@ -227,7 +272,21 @@ async function createCharts() {
             layer: [
                 {
                     // Main chart layer
-                    mark: 'line',
+                    mark: {
+                        type: 'line',
+                        strokeWidth: 2,
+                        stroke: {
+                            gradient: "linear",
+                            stops: [
+                                { offset: 0, color: "blue" },
+                                { offset: 1, color: "red" }
+                            ],
+                            x1: 0,
+                            x2: 1,
+                            y1: 1,
+                            y2: 1
+                        }
+                    },
                     encoding: {
                         x: {
                             field: 'date',
@@ -244,18 +303,19 @@ async function createCharts() {
                                 padding: 0.1
                             }
                         },
+                        // Remove the color encoding from here
                         tooltip: [
                             {
                                 field: 'date',
                                 type: 'temporal',
                                 title: 'Date',
-                                format: '%b %d, %Y'
+                                format: '%b %Y'
                             },
                             {
                                 field: 'selectedVariable',
                                 type: 'quantitative',
-                                title: 'Value',
-                                format: ',.4f'
+                                title: { signal: 'variable' },
+                                format: '.2f'
                             }
                         ]
                     }
@@ -330,6 +390,7 @@ async function createCharts() {
         const [globalHeatmap, independentHeatmap] = createHeatmapCharts(acidificationData);
 
         await vegaEmbed('#ph-deviation-chart', phDeviationChart, { actions: false });
+        await vegaEmbed('#ph-deviation-bar-chart', phDeviationBarChart, { actions: false });
         await vegaEmbed('#time-series-chart', timeSeriesChart, { actions: false });
         await vegaEmbed('#global-heatmap', globalHeatmap, { actions: false });
         await vegaEmbed('#independent-heatmap', independentHeatmap, { actions: false });
