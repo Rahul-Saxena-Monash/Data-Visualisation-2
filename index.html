@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ocean Acidification Dashboard</title>
+        <link rel="stylesheet" href="index.css" media="print" onload="this.media='all'">
+        <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    </head>
+    <body>
+        <h1>Ocean Acidification</h1>
+        <div class="container">
+            <div id="map-container">
+                <h2>pH Deviation Map</h2>
+                <p>This map shows the deviation of pH in the ocean surrounding Australia from the global average in 2013.</p>
+                <p>The pH deviation is measured using the pH scale, where a deviation of 0 is the global average. The positive deviations (more basic) are in red, and the negative deviations (more acidic) are in blue.</p>
+                <div id="ph-deviation-chart"></div>
+            </div>
+            <div id="time-series-container">
+                <h2>Ocean Acidification Time Series</h2>
+                <p>This section illustrates the changes in key variables related to ocean acidification over time using a line chart. Use the dropdown menu to select different variables:</p>
+                <ul>
+                    <li><strong>pH:</strong> Measures acidity. A decreasing pH indicates increasing acidity, which can harm marine organisms, especially those with calcium carbonate shells or skeletons.</li>
+                    <li><strong>Sea Surface Temperature (SST):</strong> Rising temperatures can accelerate chemical reactions and reduce the ocean's capacity to absorb CO2, exacerbating acidification.</li>
+                    <li><strong>Sea Surface Salinity (SSS):</strong> Changes in salinity can affect the ocean's ability to absorb CO2 and impact marine ecosystems.</li>
+                    <li><strong>Aragonite Saturation State (OMEGA_A):</strong> A decreasing value indicates it's harder for marine organisms to form aragonite shells, crucial for many species' survival.</li>
+                    <li><strong>Calcite Saturation State (OMEGA_C):</strong> Similar to aragonite, a lower value makes it more difficult for organisms to form calcite shells, affecting various marine species.</li>
+                </ul>
+                <div id="time-series-chart"></div>
+            </div>
+        </div>
+        <div id="loader" class="loader">
+            <div class="spinner"></div>
+        </div>
+        <script src="./index.js"></script>
+    </body>
+</html>
