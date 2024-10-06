@@ -6,48 +6,36 @@ body {
     margin: 0 auto;
     padding: 20px;
     background-color: #e6f3f7;
-    background-image: none; 
+    background-image: url('green-sea-turtle-8199770_1920.jpg');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
     position: relative;
     min-height: 100vh;
     overflow-x: hidden;
 }
 
-.wave-container {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100px;
-    overflow: hidden;
-}
-
-.wave {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 200%;
-    height: 50%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,120 V74.71c47.79,-22.2 103.59,-32.17 158,-28 70.36,5.37 136.33,33.31 206.8,37.5 73.84,4.36 147.54,-16.88 218.2,-35.26 69.27,-18 138.3,-24.88 209.4,-13.08 36.15,6 69.85,17.84 104.45,29.34 C989.49,95 1113,134.29 1200,67.53 V120 Z' opacity='.25' fill='%23c2e6f5'/%3E%3Cpath d='M0,120 V104.19C13,83.08 27.64,63.14 47.69,47.95 99.41,8.73 165,9 224.58,28.42 c31.15,10.15 60.09,26.07 89.67,39.8 40.92,19 84.73,46 130.83,49.67 36.26,2.85 70.9,-9.42 98.6,-31.56 31.77,-25.39 62.32,-62 103.63,-73 40.44,-10.79 81.35,6.69 119.13,24.28 s75.16,39 116.92,43.05 c59.73,5.85 113.28,-22.88 168.9,-38.84 30.2,-8.66 59,-6.17 87.09,7.5 22.43,10.89 48,26.93 60.65,49.24 V120 Z' opacity='.5' fill='%23a3d8e8'/%3E%3Cpath d='M0,120 V114.37C149.93,61 314.09,48.68 475.83,77.43 c43,7.64 84.23,20.12 127.61,26.46 59,8.63 112.48,-12.24 165.56,-35.4 C827.93,42.78 886,24.76 951.2,30 c86.53,7 172.46,45.71 248.8,84.81 V120 Z' fill='%2384c9dd'/%3E%3C/svg%3E");
-    background-size: 50% 100%;
-    background-repeat: repeat-x;
-    animation: wave 10s linear infinite;
-}
-
-@keyframes wave {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-50%);
-    }
-}
-
 h1 {
-    text-align: center;
-    color: #1a5f7a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #28d7a3; 
     font-size: 2.5em;
     margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.2); 
+    position: relative;
+}
+
+h1::before {
+    content: "🪸 ⚗️ 🌊"; 
+    margin-right: 10px; 
+    font-size: 1.5em;
+}
+
+h1::after {
+    content: "🐚 🧪 🪼"; 
+    margin-left: 10px; 
+    font-size: 1.5em;
 }
 
 h2 {
@@ -79,7 +67,6 @@ h3 {
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     padding: 30px;
-    box-sizing: border-box;
 }
 
 #ph-deviation-chart, #ph-deviation-bar-chart, #time-series-chart, #global-heatmap, #independent-heatmap {
@@ -107,7 +94,7 @@ li {
 }
 
 li::before {
-    content: "🌊";
+    content: "🐠"; 
     position: absolute;
     left: -25px;
     top: 0;
@@ -141,7 +128,7 @@ p {
     width: 60px;
     height: 60px;
     border: 4px solid #a3d8e8;
-    border-top: 4px solid #2980b9;
+    border-top: 4px solid #1a5f7a; 
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
