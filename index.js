@@ -449,4 +449,4 @@ function hideLoader() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', createCharts);
+createCharts();
