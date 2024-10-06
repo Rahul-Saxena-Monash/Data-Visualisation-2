@@ -130,6 +130,7 @@ function createHeatmapCharts(data) {
     return [globalNormalizedChart, independentNormalizedChart];
 }
 
+
 async function createCharts() {
     try {
         showLoader();
@@ -279,6 +280,7 @@ async function createCharts() {
                             gradient: "linear",
                             stops: [
                                 { offset: 0, color: "blue" },
+                                { offset: 0.5, color: "gray" },
                                 { offset: 1, color: "red" }
                             ],
                             x1: 0,
@@ -303,7 +305,6 @@ async function createCharts() {
                                 padding: 0.1
                             }
                         },
-                        // Remove the color encoding from here
                         tooltip: [
                             {
                                 field: 'date',
@@ -325,7 +326,8 @@ async function createCharts() {
                     mark: {
                         type: 'rect',
                         color: 'lightgray',
-                        opacity: 0.3
+                        opacity: 0.2,
+                        strokeWidth: 0
                     },
                     data: { values: [{ start: '1914-07-28', end: '1918-11-11' }] },
                     encoding: {
@@ -335,11 +337,19 @@ async function createCharts() {
                 },
                 {
                     // World War I text
-                    mark: { type: 'text', align: 'center', baseline: 'top', dy: 5 },
-                    data: { values: [{ date: '1916-07-01', text: 'World War I' }] },
+                    mark: {
+                        type: 'text',
+                        align: 'center',
+                        baseline: 'top',
+                        dy: 10,
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                        lineHeight: 12
+                    },
+                    data: { values: [{ date: '1916-07-01', text: ['World War I', '(1914-1918)', 'Global industrial', 'disruption'] }] },
                     encoding: {
                         x: { field: 'date', type: 'temporal', timeUnit: 'yearmonth' },
-                        y: { value: 0 },
+                        y: { value: 5 },
                         text: { field: 'text' }
                     }
                 },
@@ -347,7 +357,7 @@ async function createCharts() {
                     // Great Depression annotation
                     mark: {
                         type: 'rule',
-                        color: 'gray',
+                        color: 'darkgray',
                         strokeWidth: 1,
                         strokeDash: [4, 4]
                     },
@@ -358,29 +368,51 @@ async function createCharts() {
                 },
                 {
                     // Great Depression text
-                    mark: { type: 'text', align: 'left', baseline: 'middle', dx: 5 },
-                    data: { values: [{ date: '1929-10-29', text: 'Great Depression' }] },
+                    mark: {
+                        type: 'text',
+                        align: 'left',
+                        baseline: 'middle',
+                        dx: 5,
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                        lineHeight: 12
+                    },
+                    data: { values: [{ date: '1929-10-29', text: ['Great Depression', 'begins (1929)', 'Economic slowdown', 'impacts emissions'] }] },
                     encoding: {
                         x: { field: 'date', type: 'temporal', timeUnit: 'yearmonth' },
-                        y: { value: 20 },
+                        y: { value: 30 },
                         text: { field: 'text' }
                     }
                 },
                 {
-                    // Keeling Curve annotation
-                    mark: { type: 'rule', color: 'green', },
-                    data: { values: [{ date: '1958-03-01' }] },
+                    // Post-war boom annotation
+                    mark: {
+                        type: 'rect',
+                        color: 'lightgreen',
+                        opacity: 0.2,
+                        strokeWidth: 0
+                    },
+                    data: { values: [{ start: '1945-01-01', end: '1970-01-01' }] },
                     encoding: {
-                        x: { field: 'date', type: 'temporal', timeUnit: 'yearmonth' }
+                        x: { field: 'start', type: 'temporal' },
+                        x2: { field: 'end', type: 'temporal' }
                     }
                 },
                 {
-                    // Keeling Curve text
-                    mark: { type: 'text', align: 'left', baseline: 'middle', dx: 5 },
-                    data: { values: [{ date: '1958-03-01', text: 'Keeling Curve measurements begin' }] },
+                    // Post-war boom text
+                    mark: {
+                        type: 'text',
+                        align: 'center',
+                        baseline: 'top',
+                        dy: 10,
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                        lineHeight: 12
+                    },
+                    data: { values: [{ date: '1957-07-01', text: ['Post-war Economic Boom', '(1945-1970)', 'Rapid industrialization', 'and increased emissions'] }] },
                     encoding: {
                         x: { field: 'date', type: 'temporal', timeUnit: 'yearmonth' },
-                        y: { value: 20 },
+                        y: { value: 170 },
                         text: { field: 'text' }
                     }
                 }
