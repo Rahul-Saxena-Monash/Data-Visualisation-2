@@ -289,18 +289,6 @@ function createTimeSeriesChart(acidificationData) {
                 mark: {
                     type: 'line',
                     strokeWidth: 2,
-                    stroke: {
-                        gradient: "linear",
-                        stops: [
-                            { offset: 0, color: "blue" },
-                            { offset: 0.5, color: "gray" },
-                            { offset: 1, color: "red" }
-                        ],
-                        x1: 0,
-                        x2: 1,
-                        y1: 1,
-                        y2: 1
-                    }
                 },
                 encoding: {
                     x: {
