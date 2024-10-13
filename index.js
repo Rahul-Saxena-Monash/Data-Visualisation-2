@@ -108,7 +108,7 @@ function createHeatmapCharts(data) {
                 title: 'Deviation from Mean',
                 scale: {
                     domain: [-0.5, -0.1, 0, 0.1, 0.5],
-                    range: ['#d73027', '#fc8d59', '#e0e0e0', '#91bfdb', '#4575b4']
+                    range: ['#d7191c', '#fdae61', '#ffffbf', '#abd9e9', '#2c7bb6']
                 }
             }
         }
@@ -126,7 +126,7 @@ function createHeatmapCharts(data) {
                 title: 'Std Dev from Mean',
                 scale: {
                     domain: [-3, -1.5, 0, 1.5, 3],
-                    range: ['#d73027', '#fc8d59', '#e0e0e0', '#91bfdb', '#4575b4']
+                    range: ['#d7191c', '#fdae61', '#ffffbf', '#abd9e9', '#2c7bb6']
                 }
             }
         }
