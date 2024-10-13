@@ -243,18 +243,20 @@ function createPhDeviationBarChart(acidificationData) {
 function createTimeSeriesChart(acidificationData) {
     return {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
-        width: 'container',
-        height: 400,
         data: { values: acidificationData },
         params: [
             {
                 name: 'variable',
-                value: 'pH_T', // Default selected value
+                value: 'pH_T',
                 bind: {
                     input: 'select',
                     options: ['pH_T', 'SST', 'SSS', 'OMEGA_A', 'OMEGA_C', 'pH_deviation'],
                     labels: ['pH_T', 'SST', 'SSS', 'Omega Aragonite', 'Omega Calcite', 'pH Deviation']
                 }
+            },
+            {
+                name: 'brush',
+                select: { type: 'interval', encodings: ['x'] }
             }
         ],
         transform: [
@@ -263,151 +265,90 @@ function createTimeSeriesChart(acidificationData) {
                 as: 'selectedVariable'
             },
         ],
-        layer: [
+        vconcat: [
             {
-                // Main chart layer
-                mark: {
-                    type: 'line',
-                    strokeWidth: 2,
-                    stroke: {
-                        gradient: "linear",
-                        stops: [
-                            { offset: 0, color: "blue" },
-                            { offset: 0.5, color: "gray" },
-                            { offset: 1, color: "red" }
-                        ],
-                        x1: 0,
-                        x2: 1,
-                        y1: 1,
-                        y2: 1
-                    }
-                },
+                // Main chart
+                height: 300,
+                width: 'container',
+                transform: [{
+                    filter: { param: 'brush' }
+                }],
+                layer: [
+                    {
+                        // Main chart layer
+                        mark: {
+                            type: 'line',
+                            strokeWidth: 2,
+                            stroke: {
+                                gradient: "linear",
+                                stops: [
+                                    { offset: 0, color: "blue" },
+                                    { offset: 0.5, color: "gray" },
+                                    { offset: 1, color: "red" }
+                                ],
+                                x1: 0,
+                                x2: 1,
+                                y1: 1,
+                                y2: 1
+                            }
+                        },
+                        encoding: {
+                            x: {
+                                field: 'date',
+                                type: 'temporal',
+                                title: 'Date',
+                                scale: { domain: { param: 'brush' } }
+                            },
+                            y: {
+                                field: 'selectedVariable',
+                                type: 'quantitative',
+                                title: { signal: 'variable' },
+                                scale: {
+                                    zero: false,
+                                    padding: 0.1
+                                }
+                            },
+                            tooltip: [
+                                {
+                                    field: 'date',
+                                    type: 'temporal',
+                                    title: 'Date',
+                                    format: '%b %Y'
+                                },
+                                {
+                                    field: 'selectedVariable',
+                                    type: 'quantitative',
+                                    title: { signal: 'variable' },
+                                    format: '.2f'
+                                }
+                            ]
+                        }
+                    },
+                ]
+            },
+            {
+                // Brush view
+                height: 60,
+                width: 'container',
+                mark: "area",
                 encoding: {
                     x: {
                         field: 'date',
                         type: 'temporal',
-                        timeUnit: 'yearmonth',
-                        title: 'Date'
+                        title: '',
+                        axis: { labels: false, values: [], domain: false, ticks: false }
                     },
                     y: {
                         field: 'selectedVariable',
                         type: 'quantitative',
-                        title: { signal: 'variable' },
-                        scale: {
-                            zero: false,
-                            padding: 0.1
-                        }
-                    },
-                    tooltip: [
-                        {
-                            field: 'date',
-                            type: 'temporal',
-                            title: 'Date',
-                            format: '%b %Y'
-                        },
-                        {
-                            field: 'selectedVariable',
-                            type: 'quantitative',
-                            title: { signal: 'variable' },
-                            format: '.2f'
-                        }
-                    ]
-                }
-            },
-            {
-                // World War I annotation
-                mark: {
-                    type: 'rect',
-                    color: 'lightgray',
-                    opacity: 0.2,
-                    strokeWidth: 0
+                        title: '',
+                        axis: { labels: false, values: [], domain: false, ticks: false }
+                    }
                 },
-                data: { values: [{ start: '1914-07-28', end: '1918-11-11' }] },
-                encoding: {
-                    x: { field: 'start', type: 'temporal' },
-                    x2: { field: 'end', type: 'temporal' }
-                }
-            },
-            {
-                // World War I text
-                mark: {
-                    type: 'text',
-                    align: 'center',
-                    baseline: 'top',
-                    dy: 10,
-                    fontSize: 10,
-                    fontWeight: 'bold',
-                    lineHeight: 12
-                },
-                data: { values: [{ date: '1916-07-01', text: ['World War I', '(1914-1918)', 'Global industrial', 'disruption'] }] },
-                encoding: {
-                    x: { field: 'date', type: 'temporal', timeUnit: 'yearmonth' },
-                    y: { value: 5 },
-                    text: { field: 'text' }
-                }
-            },
-            {
-                // Great Depression annotation
-                mark: {
-                    type: 'rule',
-                    color: 'darkgray',
-                    strokeWidth: 1,
-                    strokeDash: [4, 4]
-                },
-                data: { values: [{ date: '1929-10-29' }] },
-                encoding: {
-                    x: { field: 'date', type: 'temporal', timeUnit: 'yearmonth' }
-                }
-            },
-            {
-                // Great Depression text
-                mark: {
-                    type: 'text',
-                    align: 'left',
-                    baseline: 'middle',
-                    dx: 5,
-                    fontSize: 10,
-                    fontWeight: 'bold',
-                    lineHeight: 12
-                },
-                data: { values: [{ date: '1929-10-29', text: ['Great Depression', 'begins (1929)', 'Economic slowdown', 'impacts emissions'] }] },
-                encoding: {
-                    x: { field: 'date', type: 'temporal', timeUnit: 'yearmonth' },
-                    y: { value: 30 },
-                    text: { field: 'text' }
-                }
-            },
-            {
-                // Post-war boom annotation
-                mark: {
-                    type: 'rect',
-                    color: 'lightgreen',
-                    opacity: 0.2,
-                    strokeWidth: 0
-                },
-                data: { values: [{ start: '1945-01-01', end: '1970-01-01' }] },
-                encoding: {
-                    x: { field: 'start', type: 'temporal' },
-                    x2: { field: 'end', type: 'temporal' }
-                }
-            },
-            {
-                // Post-war boom text
-                mark: {
-                    type: 'text',
-                    align: 'center',
-                    baseline: 'top',
-                    dy: 10,
-                    fontSize: 10,
-                    fontWeight: 'bold',
-                    lineHeight: 12
-                },
-                data: { values: [{ date: '1957-07-01', text: ['Post-war Economic Boom', '(1945-1970)', 'Rapid industrialization', 'and increased emissions'] }] },
-                encoding: {
-                    x: { field: 'date', type: 'temporal', timeUnit: 'yearmonth' },
-                    y: { value: 170 },
-                    text: { field: 'text' }
-                }
+                params: [{
+                    name: 'brush',
+                    select: { type: 'interval', encodings: ['x'] }
+                }]
             }
         ]
     };
