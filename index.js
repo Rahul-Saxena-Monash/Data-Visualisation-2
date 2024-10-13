@@ -208,9 +208,6 @@ function createPhDeviationBarChart(acidificationData) {
                     as: 'average_pH_deviation'
                 }],
                 groupby: ['decade']
-            },
-            {
-                sort: [{ field: 'decade' }]
             }
         ],
         mark: 'bar',
@@ -419,10 +416,12 @@ function createTimeSeriesChart(acidificationData) {
 async function createCharts() {
     try {
         showLoader();
-        const geoData = await loadAcidificationGeoData();
-        const acidificationData = await loadAcidificationData();
-        const oceanData = await loadOceanData();
-        const graticuleData = await loadGraticuleData();
+        const [geoData, acidificationData, oceanData, graticuleData] = await Promise.all([
+            loadAcidificationGeoData(),
+            loadAcidificationData(),
+            loadOceanData(),
+            loadGraticuleData()
+        ]);
 
         const phDeviationChart = createPhDeviationChart(oceanData, graticuleData, geoData);
         const phDeviationBarChart = createPhDeviationBarChart(acidificationData);
