@@ -29,7 +29,7 @@ function createHeatmapCharts(data) {
         'pH_deviation': 'pH Deviation'
     };
 
-    // Current approach: global normalization
+    // Global normalization
     let globalNormalizedData = [];
     variables.forEach(variable => {
         let values = data.map(d => d[variable]);
@@ -63,7 +63,7 @@ function createHeatmapCharts(data) {
     const baseChart = {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
         width: 'container',
-        height: 300,
+        height: { step: 80 },
         mark: 'rect',
         encoding: {
             x: {
@@ -76,10 +76,11 @@ function createHeatmapCharts(data) {
             y: {
                 field: 'key',
                 type: 'nominal',
-                title: 'Variable',
+                title: null,
                 sort: variables,
                 axis: {
-                    labelExpr: "datum.label == 'pH_T' ? 'pH' : datum.label == 'SST' ? 'Sea Surface Temperature' : datum.label == 'SSS' ? 'Sea Surface Salinity' : datum.label == 'OMEGA_A' ? 'Omega Aragonite' : datum.label == 'OMEGA_C' ? 'Omega Calcite' : datum.label == 'pH_deviation' ? 'pH Deviation' : ''"
+                    labelExpr: "datum.label == 'pH_T' ? 'pH' : datum.label == 'SST' ? 'Sea Surface Temperature' : datum.label == 'SSS' ? 'Sea Surface Salinity' : datum.label == 'OMEGA_A' ? 'Omega Aragonite' : datum.label == 'OMEGA_C' ? 'Omega Calcite' : datum.label == 'pH_deviation' ? 'pH Deviation' : ''",
+                    labelLimit: 150  // Adjust this value to prevent label truncation
                 }
             },
             tooltip: [
@@ -88,6 +89,10 @@ function createHeatmapCharts(data) {
                 { field: 'value', type: 'quantitative', title: 'Value', format: ',.4f' },
                 { field: 'deviation', type: 'quantitative', title: 'Deviation', format: ',.4f' }
             ]
+        },
+        config: {
+            view: { stroke: null },
+            axis: { grid: false }
         }
     };
 
