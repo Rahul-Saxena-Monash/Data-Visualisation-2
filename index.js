@@ -30,6 +30,13 @@ function createHeatmapCharts(data) {
     };
 
     // Global normalization
+    // This code performs global normalization across all variables:
+    // 1. It iterates through each variable (pH, temperature, salinity, etc.)
+    // 2. For each variable, it calculates the mean value across all time points
+    // 3. It then creates a new data point for each original data point, including:
+    //    - The original date and variable name
+    //    - The original value
+    //    - The deviation from the mean (used for coloring in the heatmap)
     let globalNormalizedData = [];
     variables.forEach(variable => {
         let values = data.map(d => d[variable]);
@@ -45,6 +52,13 @@ function createHeatmapCharts(data) {
     });
 
     // Independent normalization
+    // This code performs independent normalization for each variable:
+    // 1. We start with an empty array to store our normalized data
+    // 2. For each variable (pH, temperature, salinity, etc.):
+    //    a. We calculate the mean (average) value for that variable
+    //    b. We calculate the standard deviation, which measures how spread out the values are
+    //    c. For each data point, we calculate how many standard deviations it is from the mean
+    // 3. This allows us to compare changes in different variables, even if they have different scales
     let independentNormalizedData = [];
     variables.forEach(variable => {
         let values = data.map(d => d[variable]);
@@ -63,7 +77,7 @@ function createHeatmapCharts(data) {
     const baseChart = {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
         width: 'container',
-        height: { step: 80 },
+        height: { step: 80 }, // each row is 80 pixels
         mark: 'rect',
         encoding: {
             x: {
@@ -80,7 +94,7 @@ function createHeatmapCharts(data) {
                 sort: variables,
                 axis: {
                     labelExpr: "datum.label == 'pH_T' ? 'pH' : datum.label == 'SST' ? 'Sea Surface Temperature' : datum.label == 'SSS' ? 'Sea Surface Salinity' : datum.label == 'OMEGA_A' ? 'Omega Aragonite' : datum.label == 'OMEGA_C' ? 'Omega Calcite' : datum.label == 'pH_deviation' ? 'pH Deviation' : ''",
-                    labelLimit: 150  // Adjust this value to prevent label truncation
+                    labelLimit: 150
                 }
             },
             tooltip: [
@@ -277,7 +291,7 @@ function createPhDeviationBarChart(acidificationData) {
                         type: 'quantitative',
                         title: 'Average pH Deviation',
                         scale: {
-                            domain: [-0.1, 0.1]  // Set fixed domain for consistency
+                            domain: [-0.1, 0.1]  // Set fixed domain for consistency, as divergiving scale
                         }
                     },
                     color: {
@@ -324,7 +338,7 @@ function createTimeSeriesChart(acidificationData) {
                 bind: {
                     input: 'select',
                     options: ['pH_T', 'SST', 'SSS', 'OMEGA_A', 'OMEGA_C', 'pH_deviation'],
-                    labels: ['pH_T', 'SST', 'SSS', 'Omega Aragonite', 'Omega Calcite', 'pH Deviation']
+                    labels: ['pH', 'Sea Surface Temperature', 'Sea Surface Salinity', 'Omega Aragonite', 'Omega Calcite', 'pH Deviation']
                 }
             },
             {
@@ -376,7 +390,7 @@ function createTimeSeriesChart(acidificationData) {
                         {
                             field: 'selectedVariable',
                             type: 'quantitative',
-                            title: { signal: 'variable' },
+                            title: 'Variable',
                             format: '.2f'
                         }
                     ]
