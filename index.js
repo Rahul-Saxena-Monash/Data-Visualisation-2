@@ -145,7 +145,7 @@ function createPhDeviationChart(oceanData, graticuleData, geoData) {
             type: 'conicEqualArea',
             center: [0, -12],
             rotate: [-132.5, 5, 0],
-            scale: 470,
+            scale: 550,
         },
         layer: [
             {
