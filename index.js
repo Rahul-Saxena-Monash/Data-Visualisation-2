@@ -179,7 +179,7 @@ function createPhDeviationChart(oceanData, graticuleData, geoData) {
                         title: 'pH Deviation',
                         scale: {
                             domain: [-0.1, -0.05, 0, 0.05, 0.1],
-                            range: ['#d73027', '#fc8d59', '#e0e0e0', '#91bfdb', '#4575b4']
+                            range: ['#d7191c', '#fdae61', '#ffffbf', '#abd9e9', '#2c7bb6']
                         }
                     },
                     size: { value: 75 },
@@ -226,16 +226,24 @@ function createPhDeviationBarChart(acidificationData) {
             x: {
                 field: 'average_pH_deviation',
                 type: 'quantitative',
-                title: 'Average pH Deviation'
+                title: 'Average pH Deviation',
+                scale: {
+                    domain: [-0.1, 0.1]  // Set fixed domain for consistency
+                }
             },
             color: {
                 field: 'average_pH_deviation',
                 type: 'quantitative',
                 scale: {
                     domain: [-0.1, -0.05, 0, 0.05, 0.1],
-                    range: ['#d73027', '#fc8d59', '#e0e0e0', '#91bfdb', '#4575b4']
+                    range: ['#d7191c', '#fdae61', '#ffffbf', '#abd9e9', '#2c7bb6']
                 },
-                legend: null
+                legend: {
+                    title: 'pH Deviation',
+                    orient: 'bottom',
+                    direction: 'horizontal',
+                    gradientLength: 300
+                }
             },
             tooltip: [
                 { field: 'decade', type: 'ordinal', title: 'Decade' },

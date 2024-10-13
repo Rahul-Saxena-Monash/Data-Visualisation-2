@@ -15,7 +15,8 @@
             <div id="map-container">
                 <h2>pH Deviation Map</h2>
                 <p>This map shows the deviation of pH in the ocean surrounding Australia from the global average in 2013. The global average is calculated by taking the mean pH value across all measured locations for that year.</p>
-                <p>The pH deviation is measured using the pH scale, where a deviation of 0 represents the global average. Positive deviations (shown in red) indicate more basic conditions, while negative deviations (shown in blue) indicate more acidic conditions.</p>
+                <p>The pH deviation is measured using the pH scale, where a deviation of 0 represents the global average. Negative deviations (shown in red) indicate more acidic conditions, while positive deviations (shown in blue) indicate more basic conditions.</p>
+                <p><strong>Color Scale Explanation:</strong> The visualization uses a color scale inspired by the ColorBrewer diverging scale, designed for clear differentiation between values above and below a midpoint. The scale transitions from a distinct red (#d7191c) for the most acidic conditions, through orange (#fdae61), light yellow (#ffffbf), light blue (#abd9e9), to a deeper blue (#2c7bb6) for the most basic conditions. This color scheme provides a clear visual representation of pH deviations, making it easier to interpret the data at a glance.</p>
                 <p>This visualization helps identify areas where ocean acidification is more pronounced or where local factors might be influencing pH levels.</p>
                 <div id="ph-deviation-chart"></div>
                 <h3>pH Deviation Over Time</h3>
@@ -25,7 +26,7 @@
                     <li>Bars extending to the right (blue) show decades with higher average pH (more basic conditions).</li>
                     <li>Bars extending to the left (red) indicate decades with lower average pH (more acidic conditions).</li>
                 </ul>
-                <p>This visualization helps us understand the historical progression of ocean acidification, highlighting periods of significant change.</p>
+                <p>The color scale is consistent with the map above, using the same ColorBrewer-inspired diverging scale to represent pH deviations.</p>
                 <div id="ph-deviation-bar-chart"></div>
             </div>
             <div id="time-series-container">
