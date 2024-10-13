@@ -13,6 +13,7 @@ body {
     position: relative;
     min-height: 100vh;
     overflow-x: hidden;
+    padding-bottom: 100px; /* Add space for the footer */
 }
 
 h1 {
@@ -155,5 +156,36 @@ p {
 
     #map-container, #time-series-container, #heatmap-container {
         padding: 20px;
+    }
+}
+
+footer {
+    background-color: rgba(255, 255, 255, 0.8); 
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 40px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+footer p {
+    margin-bottom: 10px;
+}
+
+footer a {
+    color: #2980b9; 
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #1a5f7a; 
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    footer {
+        padding: 15px;
     }
 }
