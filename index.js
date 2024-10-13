@@ -278,58 +278,53 @@ function createTimeSeriesChart(acidificationData) {
                 transform: [{
                     filter: { param: 'brush' }
                 }],
-                layer: [
-                    {
-                        // Main chart layer
-                        mark: {
-                            type: 'line',
-                            strokeWidth: 2,
-                            stroke: {
-                                gradient: "linear",
-                                stops: [
-                                    { offset: 0, color: "blue" },
-                                    { offset: 0.5, color: "gray" },
-                                    { offset: 1, color: "red" }
-                                ],
-                                x1: 0,
-                                x2: 1,
-                                y1: 1,
-                                y2: 1
-                            }
-                        },
-                        encoding: {
-                            x: {
-                                field: 'date',
-                                type: 'temporal',
-                                title: 'Date',
-                                scale: { domain: { param: 'brush' } }
-                            },
-                            y: {
-                                field: 'selectedVariable',
-                                type: 'quantitative',
-                                title: { signal: 'variable' },
-                                scale: {
-                                    zero: false,
-                                    padding: 0.1
-                                }
-                            },
-                            tooltip: [
-                                {
-                                    field: 'date',
-                                    type: 'temporal',
-                                    title: 'Date',
-                                    format: '%b %Y'
-                                },
-                                {
-                                    field: 'selectedVariable',
-                                    type: 'quantitative',
-                                    title: { signal: 'variable' },
-                                    format: '.2f'
-                                }
-                            ]
+                mark: {
+                    type: 'line',
+                    strokeWidth: 2,
+                    stroke: {
+                        gradient: "linear",
+                        stops: [
+                            { offset: 0, color: "blue" },
+                            { offset: 0.5, color: "gray" },
+                            { offset: 1, color: "red" }
+                        ],
+                        x1: 0,
+                        x2: 1,
+                        y1: 1,
+                        y2: 1
+                    }
+                },
+                encoding: {
+                    x: {
+                        field: 'date',
+                        type: 'temporal',
+                        title: 'Date',
+                        scale: { domain: { param: 'brush' } }
+                    },
+                    y: {
+                        field: 'selectedVariable',
+                        type: 'quantitative',
+                        title: { signal: 'variable' },
+                        scale: {
+                            zero: false,
+                            padding: 0.1
                         }
                     },
-                ]
+                    tooltip: [
+                        {
+                            field: 'date',
+                            type: 'temporal',
+                            title: 'Date',
+                            format: '%b %Y'
+                        },
+                        {
+                            field: 'selectedVariable',
+                            type: 'quantitative',
+                            title: { signal: 'variable' },
+                            format: '.2f'
+                        }
+                    ]
+                }
             },
             {
                 // Brush view
