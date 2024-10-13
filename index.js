@@ -136,6 +136,11 @@ function createHeatmapCharts(data) {
 }
 
 function createPhDeviationChart(oceanData, graticuleData, geoData) {
+    // Find the points with the largest and smallest pH deviations
+    const deviations = geoData.features.map(feature => feature.properties.pH_deviation);
+    const maxDeviation = Math.max(...deviations);
+    const minDeviation = Math.min(...deviations);
+
     return {
         $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
         width: 'container',
@@ -189,6 +194,48 @@ function createPhDeviationChart(oceanData, graticuleData, geoData) {
                         { field: "properties.pH_deviation", type: "quantitative", title: "pH deviation" }
                     ]
                 }
+            },
+            {
+                // Annotation for the largest deviation
+                data: { values: geoData.features },
+                transform: [
+                    {
+                        filter: `datum.properties.pH_deviation === ${maxDeviation}`
+                    }
+                ],
+                mark: { type: 'text', dy: -10, fontSize: 10, fontWeight: 'bold', color: '#2c7bb6' },
+                encoding: {
+                    longitude: {
+                        field: 'geometry.coordinates.0',
+                        type: 'quantitative'
+                    },
+                    latitude: {
+                        field: 'geometry.coordinates.1',
+                        type: 'quantitative'
+                    },
+                    text: { value: 'Max Deviation' }
+                }
+            },
+            {
+                // Annotation for the smallest deviation
+                data: { values: geoData.features },
+                transform: [
+                    {
+                        filter: `datum.properties.pH_deviation === ${minDeviation}`
+                    }
+                ],
+                mark: { type: 'text', dy: -10, fontSize: 10, fontWeight: 'bold', color: '#d7191c' },
+                encoding: {
+                    longitude: {
+                        field: 'geometry.coordinates.0',
+                        type: 'quantitative'
+                    },
+                    latitude: {
+                        field: 'geometry.coordinates.1',
+                        type: 'quantitative'
+                    },
+                    text: { value: 'Min Deviation' }
+                }
             }
         ]
     };
@@ -215,41 +262,54 @@ function createPhDeviationBarChart(acidificationData) {
                 groupby: ['decade']
             }
         ],
-        mark: 'bar',
-        encoding: {
-            y: {
-                field: 'decade',
-                type: 'ordinal',
-                title: 'Decade',
-                sort: 'ascending'
-            },
-            x: {
-                field: 'average_pH_deviation',
-                type: 'quantitative',
-                title: 'Average pH Deviation',
-                scale: {
-                    domain: [-0.1, 0.1]  // Set fixed domain for consistency
+        layer: [
+            {
+                mark: 'bar',
+                encoding: {
+                    y: {
+                        field: 'decade',
+                        type: 'ordinal',
+                        title: 'Decade',
+                        sort: 'ascending'
+                    },
+                    x: {
+                        field: 'average_pH_deviation',
+                        type: 'quantitative',
+                        title: 'Average pH Deviation',
+                        scale: {
+                            domain: [-0.1, 0.1]  // Set fixed domain for consistency
+                        }
+                    },
+                    color: {
+                        field: 'average_pH_deviation',
+                        type: 'quantitative',
+                        scale: {
+                            domain: [-0.1, -0.05, 0, 0.05, 0.1],
+                            range: ['#d7191c', '#fdae61', '#ffffbf', '#abd9e9', '#2c7bb6']
+                        },
+                        legend: {
+                            title: 'pH Deviation',
+                            orient: 'bottom',
+                            direction: 'horizontal',
+                            gradientLength: 300
+                        }
+                    },
+                    tooltip: [
+                        { field: 'decade', type: 'ordinal', title: 'Decade' },
+                        { field: 'average_pH_deviation', type: 'quantitative', title: 'Average pH Deviation', format: '.4f' }
+                    ]
                 }
             },
-            color: {
-                field: 'average_pH_deviation',
-                type: 'quantitative',
-                scale: {
-                    domain: [-0.1, -0.05, 0, 0.05, 0.1],
-                    range: ['#d7191c', '#fdae61', '#ffffbf', '#abd9e9', '#2c7bb6']
-                },
-                legend: {
-                    title: 'pH Deviation',
-                    orient: 'bottom',
-                    direction: 'horizontal',
-                    gradientLength: 300
+            {
+                // Annotation for the 2010s
+                mark: { type: 'text', align: 'left', dx: 10, dy: -10, fontSize: 12, color: '#000', lineBreak: '\n' },
+                encoding: {
+                    y: { field: 'decade', type: 'ordinal', datum: '2010s' },
+                    x: { datum: 0.005 },
+                    text: { value: 'Nearly 30% increase in acidity\nin 2010s compared to 1870s (using log scale)' }
                 }
-            },
-            tooltip: [
-                { field: 'decade', type: 'ordinal', title: 'Decade' },
-                { field: 'average_pH_deviation', type: 'quantitative', title: 'Average pH Deviation', format: '.4f' }
-            ]
-        }
+            }
+        ]
     };
 }
 
